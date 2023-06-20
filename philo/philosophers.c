@@ -12,6 +12,13 @@
 
 #include "philosophers.h"
 
+void	one_philo(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->r_fork);
+	print_terminal(philo, TAKEN);
+	pthread_mutex_unlock(&philo->r_fork);
+}
+
 int	check_args(int argc, char **argv)
 {
 	if (argc < 5 || argc > 6)
@@ -37,24 +44,34 @@ int	check_args(int argc, char **argv)
 	return (1);
 }
 
-void	init_times(t_times *times, char **argv, int argc)
+void	init_times(t_rules *rules, char **argv, int argc)
 {
-	times->n_philo = ft_atoi(argv[1]);
-	times->t_die = ft_atoi(argv[2]);
-	times->t_eat = ft_atoi(argv[3]);
-	times->t_sleep = ft_atoi(argv[4]);
+	rules->n_philo = ft_atoi(argv[1]);
+	rules->t_die = ft_atoi(argv[2]);
+	rules->t_eat = ft_atoi(argv[3]);
+	rules->t_sleep = ft_atoi(argv[4]);
 	if (argc == 6)
-		times->m_eat = ft_atoi(argv[5]);
+		rules->m_eat = ft_atoi(argv[5]);
 	else
-		times->m_eat = 0;
+		rules->m_eat = 0;
+	rules->t_start = gettime();
+	rules->died = 0;
+	rules->all_ate = 0;
 }
 
 int	main(int argc, char **argv)
 {
-	t_times	times;
+	t_rules	*rules;
 
 	if (check_args(argc, &*argv) != 1)
 		return (0);
-	init_times(&times, &*argv, argc);
+	rules = malloc(sizeof(t_rules));
+	if (rules == NULL)
+		return (printf("An error has occurred\n"));
+	init_times(rules, &*argv, argc);
+	creating(rules);
+	free(rules->forks);
+	free(rules->phi);
+	free(rules);
 	return (0);
 }

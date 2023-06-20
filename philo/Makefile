@@ -13,11 +13,14 @@
 NAME = philo
 
 CC = cc -g
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -pthread -fsanitize=thread
 RM = rm -f
 
 SRC = philosophers.c \
-	utils.c
+	utils.c \
+	creating.c \
+	living.c \
+	verify.c
 		
 OBJ = $(SRC:.c=.o)
 

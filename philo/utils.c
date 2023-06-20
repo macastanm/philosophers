@@ -12,6 +12,14 @@
 
 #include "philosophers.h"
 
+long long	gettime(void)
+{
+	struct timeval	time;
+
+	gettimeofday(&time, NULL);
+	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
+}
+
 int	ft_isbig(int argc, char **argv)
 {
 	int	i;
