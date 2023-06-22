@@ -14,9 +14,9 @@
 
 void	one_philo(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->r_fork);
+	pthread_mutex_lock(philo->r_fork);
 	print_terminal(philo, TAKEN);
-	pthread_mutex_unlock(&philo->r_fork);
+	pthread_mutex_unlock(philo->r_fork);
 }
 
 int	check_args(int argc, char **argv)
@@ -70,8 +70,8 @@ int	main(int argc, char **argv)
 		return (printf("An error has occurred\n"));
 	init_times(rules, &*argv, argc);
 	creating(rules);
-	free(rules->forks);
 	free(rules->phi);
+	free(rules->forks);
 	free(rules);
 	return (0);
 }

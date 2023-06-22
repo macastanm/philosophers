@@ -16,18 +16,18 @@ int	join_threads(t_rules *rules)
 {
 	int	i;
 
-	i = 1;
-	while (i <= rules->n_philo)
+	i = 0;
+	if (pthread_join(rules->control, NULL) != 0)
+		return (0);
+	while (i < rules->n_philo)
 	{
-		if (pthread_join(&rules->phi[i].philo, NULL) != 0)
+		if (pthread_join(rules->phi[i].philo, NULL) != 0)
 			return (0);
 		usleep(2000);
 		i++;
 	}
-	if (pthread_join(&rules->control, NULL) != 0)
-		return (0);
-	i = 1;
-	while (i <= rules->n_philo)
+	i = 0;
+	while (i < rules->n_philo)
 	{
 		pthread_mutex_destroy(&rules->forks[i]);
 		pthread_mutex_destroy(&rules->phi[i].alive);
@@ -41,8 +41,8 @@ int	creat_thread(t_rules *rules)
 {
 	int	i;
 
-	i = 1;
-	while (i <= rules->n_philo)
+	i = 0;
+	while (i < rules->n_philo)
 	{
 		if (pthread_create(&rules->phi[i].philo, NULL,
 				&living, &rules->phi[i]) != 0)
@@ -50,7 +50,7 @@ int	creat_thread(t_rules *rules)
 		usleep(2000);
 		i++;
 	}
-	if (pthread_create(&rules->verify, NULL,
+	if (pthread_create(&rules->control, NULL,
 			&verify, rules) != 0)
 		return (0);
 	return (1);
@@ -60,13 +60,13 @@ int	creat_philos(t_rules *rules, pthread_mutex_t *forks)
 {
 	int	i;
 
-	i = 1;
+	i = 0;
 	rules->phi = malloc(sizeof(t_philo) * rules->n_philo);
 	if (rules->phi == NULL)
 		return (0);
-	while (i <= rules->n_philo)
+	while (i < rules->n_philo)
 	{
-		rules->phi->id = i;
+		rules->phi->id = i + 1;
 		rules->phi->t_eaten = 0;
 		rules->phi->lt_eat = gettime();
 		rules->phi->r_fork = &forks[i];
@@ -75,7 +75,7 @@ int	creat_philos(t_rules *rules, pthread_mutex_t *forks)
 		else
 			rules->phi->l_fork = &forks[i + 1];
 		rules->phi->rules = rules;
-		if (pthread_mutex_init(rules->phi->alive, NULL) != 0)
+		if (pthread_mutex_init(&rules->phi->alive, NULL) != 0)
 			return (0);
 		i++;
 	}
@@ -86,11 +86,11 @@ int	creat_forks(t_rules *rules)
 {
 	int	i;
 
-	i = 1;
+	i = 0;
 	rules->forks = malloc(sizeof (pthread_mutex_t) * (rules->n_philo));
 	if (!rules->forks)
 		return (0);
-	while (i <= rules->n_philo)
+	while (i < rules->n_philo)
 	{
 		if (pthread_mutex_init(&rules->forks[i], NULL) != 0)
 			return (0);

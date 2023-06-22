@@ -19,6 +19,8 @@
 # include <unistd.h>
 # include <limits.h>
 # include <sys/time.h>
+# include <sys/types.h>
+# include <sys/wait.h>
 
 # define TAKEN "has taken a fork\n"
 # define EATING " is eating\n"
@@ -57,6 +59,7 @@ typedef struct s_rules
 
 // philosophers.c
 
+void		one_philo(t_philo *philo);
 void		init_times(t_rules *rules, char **argv, int argc);
 int			check_args(int argc, char **argv);
 
@@ -78,7 +81,7 @@ int			join_threads(t_rules *rules);
 
 // living.c
 
-void		living(void *identification);
+void		*living(void *identification);
 int			thinking(t_philo *philo);
 int			sleeping(t_philo *philo);
 int			eating(t_philo *philo);
