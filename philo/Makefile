@@ -13,7 +13,7 @@
 NAME = philo
 
 CC = cc -g
-CFLAGS = -Wall -Wextra -Werror -pthread -fsanitize=thread
+CFLAGS = -Wall -Wextra -Werror -pthread
 RM = rm -f
 
 SRC = philosophers.c \

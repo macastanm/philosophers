@@ -16,7 +16,7 @@ int	grab_fork(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->rules->verify);
 	if (philo->rules->died != 0
-		|| philo->rules->m_eat == philo->rules->n_philo)
+		|| philo->rules->all_ate == philo->rules->n_philo)
 	{
 		pthread_mutex_unlock(&philo->rules->verify);
 		return (0);
@@ -43,7 +43,7 @@ int	eating(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->rules->verify);
 	if (philo->rules->died != 0
-		|| philo->rules->m_eat == philo->rules->n_philo)
+		|| philo->rules->all_ate == philo->rules->n_philo)
 	{
 		pthread_mutex_unlock(&philo->rules->verify);
 		return (0);
@@ -53,10 +53,12 @@ int	eating(t_philo *philo)
 	print_terminal(philo, EATING);
 	philo->lt_eat = gettime();
 	pthread_mutex_lock(&philo->rules->verify);
-	philo->t_eaten++;
 	if (philo->rules->m_eat != 0)
+	{
+		philo->t_eaten++;
 		if (philo->t_eaten == philo->rules->m_eat)
 			philo->rules->all_ate++;
+	}
 	pthread_mutex_unlock(&philo->rules->verify);
 	pthread_mutex_unlock(&philo->alive);
 	usleep(philo->rules->t_eat * 1000);
@@ -69,7 +71,7 @@ int	sleeping(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->rules->verify);
 	if (philo->rules->died != 0
-		|| philo->rules->m_eat == philo->rules->n_philo)
+		|| philo->rules->all_ate == philo->rules->n_philo)
 	{
 		pthread_mutex_unlock(&philo->rules->verify);
 		return (0);
@@ -84,7 +86,7 @@ int	thinking(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->rules->verify);
 	if (philo->rules->died != 0
-		|| philo->rules->m_eat == philo->rules->n_philo)
+		|| philo->rules->all_ate == philo->rules->n_philo)
 	{
 		pthread_mutex_unlock(&philo->rules->verify);
 		return (0);
@@ -105,7 +107,7 @@ void	*living(void *identification)
 		return (NULL);
 	}
 	if (philo->id % 2 == 0)
-		usleep(philo->rules->t_eat / 2);
+		usleep(2000);
 	while (1)
 	{
 		if (grab_fork(philo) == 0)
@@ -117,4 +119,5 @@ void	*living(void *identification)
 		if (thinking(philo) == 0)
 			return (NULL);
 	}
+	return (NULL);
 }

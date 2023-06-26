@@ -17,8 +17,6 @@ int	join_threads(t_rules *rules)
 	int	i;
 
 	i = 0;
-	if (pthread_join(rules->control, NULL) != 0)
-		return (0);
 	while (i < rules->n_philo)
 	{
 		if (pthread_join(rules->phi[i].philo, NULL) != 0)
@@ -26,11 +24,14 @@ int	join_threads(t_rules *rules)
 		usleep(2000);
 		i++;
 	}
+	if (pthread_join(rules->control, NULL) != 0)
+		return (0);
 	i = 0;
 	while (i < rules->n_philo)
 	{
 		pthread_mutex_destroy(&rules->forks[i]);
 		pthread_mutex_destroy(&rules->phi[i].alive);
+		i++;
 	}
 	pthread_mutex_destroy(&rules->print);
 	pthread_mutex_destroy(&rules->verify);
@@ -66,16 +67,16 @@ int	creat_philos(t_rules *rules, pthread_mutex_t *forks)
 		return (0);
 	while (i < rules->n_philo)
 	{
-		rules->phi->id = i + 1;
-		rules->phi->t_eaten = 0;
-		rules->phi->lt_eat = gettime();
-		rules->phi->r_fork = &forks[i];
-		if (i == rules->n_philo)
-			rules->phi->l_fork = &forks[0];
+		rules->phi[i].id = i + 1;
+		rules->phi[i].t_eaten = 0;
+		rules->phi[i].lt_eat = gettime();
+		rules->phi[i].r_fork = &forks[i];
+		if (i == rules->n_philo - 1)
+			rules->phi[i].l_fork = &forks[0];
 		else
-			rules->phi->l_fork = &forks[i + 1];
-		rules->phi->rules = rules;
-		if (pthread_mutex_init(&rules->phi->alive, NULL) != 0)
+			rules->phi[i].l_fork = &forks[i + 1];
+		rules->phi[i].rules = rules;
+		if (pthread_mutex_init(&rules->phi[i].alive, NULL) != 0)
 			return (0);
 		i++;
 	}
@@ -96,9 +97,9 @@ int	creat_forks(t_rules *rules)
 			return (0);
 		i++;
 	}
-	if (pthread_mutex_init(&rules->print, NULL) != 0)
-		return (0);
 	if (pthread_mutex_init(&rules->verify, NULL) != 0)
+		return (0);
+	if (pthread_mutex_init(&rules->print, NULL) != 0)
 		return (0);
 	return (1);
 }

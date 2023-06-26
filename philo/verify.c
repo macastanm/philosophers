@@ -16,19 +16,18 @@ void	print_terminal(t_philo *philo, char *arg)
 {
 	long long	time_now;
 
-	time_now = 0;
 	pthread_mutex_lock(&philo->rules->print);
 	pthread_mutex_lock(&philo->rules->verify);
 	if (philo->rules->died != 0
-		|| philo->rules->m_eat == philo->rules->n_philo)
+		|| philo->rules->all_ate == philo->rules->n_philo)
 	{
-		pthread_mutex_unlock(&philo->rules->verify);
 		pthread_mutex_unlock(&philo->rules->print);
+		pthread_mutex_unlock(&philo->rules->verify);
 		return ;
 	}
-	pthread_mutex_unlock(&philo->rules->verify);
 	time_now = gettime() - philo->rules->t_start;
 	printf("%lld %d %s", time_now, philo->id, arg);
+	pthread_mutex_unlock(&philo->rules->verify);
 	pthread_mutex_unlock(&philo->rules->print);
 }
 
@@ -58,7 +57,7 @@ int	is_dead(t_rules *rules)
 int	already_ate(t_rules *rules)
 {
 	pthread_mutex_lock(&rules->verify);
-	if (rules->m_eat == rules->n_philo)
+	if (rules->all_ate == rules->n_philo)
 	{
 		pthread_mutex_unlock(&rules->verify);
 		return (0);
