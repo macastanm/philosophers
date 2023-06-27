@@ -21,7 +21,7 @@ int	join_threads(t_rules *rules)
 	{
 		if (pthread_join(rules->phi[i].philo, NULL) != 0)
 			return (0);
-		usleep(2000);
+		//usleep(2000);
 		i++;
 	}
 	if (pthread_join(rules->control, NULL) != 0)

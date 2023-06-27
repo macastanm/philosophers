@@ -119,5 +119,4 @@ void	*living(void *identification)
 		if (thinking(philo) == 0)
 			return (NULL);
 	}
-	return (NULL);
 }
