@@ -21,20 +21,10 @@ int	join_threads(t_rules *rules)
 	{
 		if (pthread_join(rules->phi[i].philo, NULL) != 0)
 			return (0);
-		//usleep(2000);
 		i++;
 	}
 	if (pthread_join(rules->control, NULL) != 0)
 		return (0);
-	i = 0;
-	while (i < rules->n_philo)
-	{
-		pthread_mutex_destroy(&rules->forks[i]);
-		pthread_mutex_destroy(&rules->phi[i].alive);
-		i++;
-	}
-	pthread_mutex_destroy(&rules->print);
-	pthread_mutex_destroy(&rules->verify);
 	return (1);
 }
 

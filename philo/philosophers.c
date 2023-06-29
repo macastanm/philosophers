@@ -12,6 +12,21 @@
 
 #include "philosophers.h"
 
+void	ft_destroy(t_rules *rules)
+{
+	int	i;
+
+	i = 0;
+	while (i < rules->n_philo)
+	{
+		pthread_mutex_destroy(&rules->forks[i]);
+		pthread_mutex_destroy(&rules->phi[i].alive);
+		i++;
+	}
+	pthread_mutex_destroy(&rules->print);
+	pthread_mutex_destroy(&rules->verify);
+}
+
 void	one_philo(t_philo *philo)
 {
 	pthread_mutex_lock(philo->r_fork);
@@ -70,6 +85,7 @@ int	main(int argc, char **argv)
 		return (printf("An error has occurred\n"));
 	init_times(rules, &*argv, argc);
 	creating(rules);
+	ft_destroy(rules);
 	free(rules->phi);
 	free(rules->forks);
 	free(rules);

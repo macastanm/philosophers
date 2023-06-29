@@ -12,6 +12,31 @@
 
 #include "philosophers.h"
 
+void	*living(void *identification)
+{
+	t_philo	*philo;
+
+	philo = (t_philo *)identification;
+	if (philo->rules->n_philo == 1)
+	{
+		one_philo(philo);
+		return (NULL);
+	}
+	if (philo->id % 2 == 0)
+		usleep(2000);
+	while (1)
+	{
+		if (grab_fork(philo) == 0)
+			return (NULL);
+		if (eating(philo) == 0)
+			return (NULL);
+		if (sleeping(philo) == 0)
+			return (NULL);
+		if (thinking(philo) == 0)
+			return (NULL);
+	}
+}
+
 void	print_terminal(t_philo *philo, char *arg)
 {
 	long long	time_now;

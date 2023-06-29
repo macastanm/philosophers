@@ -61,6 +61,7 @@ typedef struct s_rules
 
 void		one_philo(t_philo *philo);
 void		init_times(t_rules *rules, char **argv, int argc);
+void		ft_destroy(t_rules *rules);
 int			check_args(int argc, char **argv);
 
 // utils.c
@@ -81,15 +82,17 @@ int			join_threads(t_rules *rules);
 
 // living.c
 
-void		*living(void *identification);
 int			thinking(t_philo *philo);
 int			sleeping(t_philo *philo);
 int			eating(t_philo *philo);
 int			grab_fork(t_philo *philo);
+void		eating2(t_philo *philo);
 
 // verify.c
 
+void		ft_destroy(t_rules *rules);
 void		*verify(void *norm);
+void		*living(void *identification);
 void		print_terminal(t_philo *philo, char *arg);
 int			is_dead(t_rules *rules);
 int			already_ate(t_rules *rules);
